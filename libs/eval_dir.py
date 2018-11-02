@@ -78,7 +78,7 @@ if __name__ == '__main__':
 			continue
 		if cls_anno[img_name.split('/')[-1]] == imagenet_idx2cls[predicted]:
 			correct += 1
-	print('Accuracy of the network on the %d test images: %d %%' % (total,
+	print('Accuracy of the network on the %d test images: %f %%' % (total,
 			100 * correct / total))
 
 

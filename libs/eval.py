@@ -42,7 +42,7 @@ if __name__ == '__main__':
 			continue
 		if dataset.imagenet_idx2cls[predicted] == label[0]:
 			correct += 1
-	print('Accuracy of the network on the %d test images: %d %%' % (total,
+	print('Accuracy of the network on the %d test images: %f %%' % (total,
 			100 * correct / total))
 
 
