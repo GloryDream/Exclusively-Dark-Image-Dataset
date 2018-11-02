@@ -74,6 +74,8 @@ if __name__ == '__main__':
 		predicted = torch.argmax(output.data, 1).item()
 		total += 1
 		#print(predicted)
+		if predicted not in imagenet_idx2cls:
+			continue
 		if cls_anno[img_name.split('/')[-1]] == imagenet_idx2cls[predicted]:
 			correct += 1
 	print('Accuracy of the network on the %d test images: %d %%' % (total,
