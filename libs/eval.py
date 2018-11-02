@@ -23,7 +23,7 @@ if __name__ == '__main__':
             transforms.ToTensor(),
             normalize,
         ])
-	dataset = EdarkDataset(root='~/dataset/Exclusively-Dark-Image-Dataset/ExDark',
+	dataset = EdarkDataset(root='/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/ExDark',
 	                                     transform=transform,  mode='test')
 	dataloader = DataLoader(dataset,
 	                        batch_size=opt.batch_size,
