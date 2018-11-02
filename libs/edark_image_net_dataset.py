@@ -42,9 +42,10 @@ class EdarkDataset(Dataset):
 		return len(self.img_names)
 
 	def __getitem__(self, idx):
-		img = Image.open(os.path.join('/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/ExDark', self.img_names[idx]))
+		img_path = os.path.join('/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/ExDark', self.img_names[idx])
+		img = Image.open(img_path)
 		cls = self.img_names[idx].split('/')[1]
 
 		if self.transform:
 			img = self.transform(img)
-		return img, cls
+		return img, cls, img_path

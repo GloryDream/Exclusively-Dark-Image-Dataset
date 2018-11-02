@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
 	total = 0
 	correct = 0
-	for img, label in tqdm(dataloader):
+	for img, label, _ in tqdm(dataloader):
 		output = resnet50(img.type(torch.cuda.FloatTensor))
 		predicted = torch.argmax(output.data, 1).item()
 		total += 1
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 			continue
 		if dataset.imagenet_idx2cls[predicted] == label:
 			correct += 1
-	print('Accuracy of the network on the 10000 test images: %d %%' % (
+	print('Accuracy of the network on the %d test images: %d %%' % (total,
 			100 * correct / total))
 
 
