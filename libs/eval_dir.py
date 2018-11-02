@@ -25,6 +25,28 @@ def file_name(file_dir, form='jpg'):
 				file_list.append(os.path.join(root, file))
 	return sorted(file_list)
 
+cls2imagenet_idx = {
+			'Bicycle': 444,
+			'Boat': 833,
+			'Bottle': [440, 720, 737, 898, 907],
+			'Bus': 779,
+			'Car': [817, 864],
+			'Cat': [281, 282, 283, 284, 285, 383],
+			'Chair': [423, 559, 765],
+			'Cup': [647, 968],
+			'Dog': list(range(150, 276)),
+			'Motorbike': 670,
+			# 'People': 10,
+			'Table': [736, 532]
+		}
+
+imagenet_idx2cls = {}
+for item in cls2imagenet_idx:
+	if isinstance(cls2imagenet_idx[item], list):
+		for id in cls2imagenet_idx[item]:
+			imagenet_idx2cls[id] = item
+	else:
+		imagenet_idx2cls[cls2imagenet_idx[item]] = item
 
 if __name__ == '__main__':
 	with open(opt.anno) as f:
@@ -41,13 +63,6 @@ if __name__ == '__main__':
         ])
 	img_name_list = file_name(opt.img_dir)
 
-	# dataset = EdarkDataset(root='/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/ExDark',
-	#                                      transform=transform,  mode='test')
-	# dataloader = DataLoader(dataset,
-	#                         batch_size=opt.batch_size,
-	#                         shuffle=True,
-	#                         num_workers=4)
-
 	total = 0
 	correct = 0
 	for img_name in tqdm(img_name_list):
@@ -59,7 +74,7 @@ if __name__ == '__main__':
 		predicted = torch.argmax(output.data, 1).item()
 		total += 1
 		#print(predicted)
-		if cls_anno[img_name.split('/')[-1]] == predicted:
+		if cls_anno[img_name.split('/')[-1]] == imagenet_idx2cls[predicted]:
 			correct += 1
 	print('Accuracy of the network on the %d test images: %d %%' % (total,
 			100 * correct / total))
