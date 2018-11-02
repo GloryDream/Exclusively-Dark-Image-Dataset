@@ -36,9 +36,11 @@ if __name__ == '__main__':
 		output = resnet50(img.type(torch.cuda.FloatTensor))
 		predicted = torch.argmax(output.data, 1).item()
 		total += 1
+		#print('label: ', label)
+		#print('predicted: ', predicted)
 		if predicted not in dataset.imagenet_idx2cls:
 			continue
-		if dataset.imagenet_idx2cls[predicted] == label:
+		if dataset.imagenet_idx2cls[predicted] == label[0]:
 			correct += 1
 	print('Accuracy of the network on the %d test images: %d %%' % (total,
 			100 * correct / total))
