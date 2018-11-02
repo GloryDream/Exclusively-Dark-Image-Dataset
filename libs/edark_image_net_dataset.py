@@ -1,7 +1,7 @@
 from torch.utils.data import Dataset
 import pickle
-from imageio import imread
 import os
+from skimage import io
 import torch
 
 
@@ -43,7 +43,7 @@ class EdarkDataset(Dataset):
 		return len(self.img_names)
 
 	def __getitem__(self, idx):
-		img = imread(os.path.join('/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/ExDark', self.img_names[idx]))
+		img = io.imread(os.path.join('/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/ExDark', self.img_names[idx]))
 		cls = self.img_names[idx].split('/')[1]
 
 		if self.transform:
