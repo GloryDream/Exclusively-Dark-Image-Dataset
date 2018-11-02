@@ -4,21 +4,6 @@ from imageio import imread
 import os
 import torch
 
-cls2idx = {
-	'Bicycle': 0,
-	'Boat': 1,
-	'Bottle': 2,
-	'Bus': 3,
-	'Car': 4,
-	'Cat': 5,
-	'Chair': 6,
-	'Cup': 7,
-	'Dog': 8,
-	'Motorbike': 9,
-	'People': 10,
-	'Table': 11
-}
-
 
 class EdarkDataset(Dataset):
 	def __init__(self, root, transform=None, mode='train'):
@@ -32,15 +17,35 @@ class EdarkDataset(Dataset):
 			raise NotImplementedError
 		self.transform = transform
 
+		self.cls2imagenet_idx = {
+			'Bicycle': 444,
+			'Boat': 833,
+			'Bottle': [440, 720, 737, 898, 907],
+			'Bus': 779,
+			'Car': [817, 864],
+			'Cat': [281, 282, 283, 284, 285, 383],
+			'Chair': [423, 559, 765],
+			'Cup': [647, 968],
+			'Dog': list(range(150, 276)),
+			'Motorbike': 670,
+			# 'People': 10,
+			'Table': [736, 532]
+		}
+		self.imagenet_idx2cls = {}
+		for item in self.cls2imagenet_idx:
+			if isinstance(self.cls2imagenet_idx[item], list):
+				for id in self.cls2imagenet_idx[item]:
+					self.imagenet_idx2cls[id] = item
+			else:
+				self.imagenet_idx2cls[self.cls2imagenet_idx[item]] = item
+
 	def __len__(self):
 		return len(self.img_names)
 
 	def __getitem__(self, idx):
 		img = imread(self.img_names[idx])
-		cls_id = int(cls2idx[self.img_names[idx].split('/')[1]])
-		# label = torch.zeros(len(cls2idx))
-		# label[cls_id] = 1
+		cls = self.img_names[idx].split('/')[1]
 
 		if self.transform:
 			img = self.transform(img)
-		return img, cls_id
+		return img, cls
