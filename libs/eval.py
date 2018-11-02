@@ -33,7 +33,7 @@ if __name__ == '__main__':
 	total = 0
 	correct = 0
 	for img, label in tqdm(dataloader):
-		output = resnet50(img)
+		output = resnet50(img.type(torch.cuda.FloatTensor))
 		predicted = torch.argmax(output.data, 1).item()
 		total += 1
 		if predicted not in dataset.imagenet_idx2cls:
