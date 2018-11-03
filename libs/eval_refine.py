@@ -10,7 +10,7 @@ import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', type=int, default=1, help='size of the batches')
-parser.add_argument('--topk', type=int, help='The topk acc')
+parser.add_argument('--topk', required=True, type=int, help='The topk acc')
 opt = parser.parse_args()
 print(opt)
 
@@ -38,6 +38,7 @@ for item in cls2imagenet_idx:
 		imagenet_idx2cls[cls2imagenet_idx[item]] = item
 
 indices = list(imagenet_idx2cls.keys())
+indices.sort()
 oreder_imagenet_idx2cls = collections.OrderedDict(sorted(imagenet_idx2cls.items()))
 
 refined_imagenet_idx2cls = {}
@@ -80,14 +81,14 @@ if __name__ == '__main__':
 
 		if label[0] == 'People':
 			continue
-		gd = cls2imagenet_idx[label[0]]
+		gd = refined_imagenet_cls2idx[label[0]]
 		if not isinstance(gd, list):
 			gd = [gd]
 		if list(set(gd)&set(top_idx)) == []:
 			continue
 		else:
 			correct += 1
-	print('Top %d Accuracy of the network on the %d test images: %f %%' % (opt.topk, total,
+	print('Top %d accuracy of the network on the %d test images: %f %%' % (opt.topk, total,
 			100 * correct / total))
 
 
