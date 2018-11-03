@@ -82,13 +82,13 @@ if __name__ == '__main__':
 			if cls_anno[img_name.split('/')[-1]] == imagenet_idx2cls[predicted]:
 				correct += 1
 		else:
-			_, tok_idx = torch.topk(output.data, k=opt.topk, dim=1)
-			tok_idx = tok_idx.cpu().numpy().tolist()[0]
+			_, top_idx = torch.topk(output.data, k=opt.topk, dim=1)
+			top_idx = top_idx.cpu().numpy().tolist()[0]
 
 			gd = cls2imagenet_idx[cls_anno[img_name.split('/')[-1]]]
 			if not isinstance(gd, list):
 				gd = [gd]
-			if list(set(gd)&set(tok_idx)) == []:
+			if list(set(gd)&set(top_idx)) == []:
 				continue
 			else:
 				correct += 1
