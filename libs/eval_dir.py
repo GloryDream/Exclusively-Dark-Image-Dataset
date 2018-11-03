@@ -73,10 +73,10 @@ if __name__ == '__main__':
 		img = img[None, :, :, :]
 		#print(np.shape(img))
 		output = resnet50(img.type(torch.cuda.FloatTensor))
-		predicted = torch.argmax(output.data, 1).item()
 		total += 1
 		#print(predicted)
 		if opt.topk is None:
+			predicted = torch.argmax(output.data, 1).item()
 			if predicted not in imagenet_idx2cls:
 				continue
 			if cls_anno[img_name.split('/')[-1]] == imagenet_idx2cls[predicted]:
