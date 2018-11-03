@@ -36,7 +36,6 @@ if __name__ == '__main__':
 	for img, label, _ in tqdm(dataloader):
 		output = resnet50(img.type(torch.cuda.FloatTensor))
 		predicted = torch.argmax(output.data, 1).item()
-		print(output.data.size())
 		total += 1
 		#print('label: ', label)
 		#print('predicted: ', predicted)
