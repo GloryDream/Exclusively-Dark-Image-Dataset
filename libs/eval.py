@@ -9,6 +9,7 @@ import torch
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', type=int, default=1, help='size of the batches')
+parser.add_argument('--topk', type=int, help='The topk acc')
 opt = parser.parse_args()
 print(opt)
 
@@ -38,10 +39,22 @@ if __name__ == '__main__':
 		total += 1
 		#print('label: ', label)
 		#print('predicted: ', predicted)
-		if predicted not in dataset.imagenet_idx2cls:
-			continue
-		if dataset.imagenet_idx2cls[predicted] == label[0]:
-			correct += 1
+		if opt.topk is None:
+			if predicted not in dataset.imagenet_idx2cls:
+				continue
+			if dataset.imagenet_idx2cls[predicted] == label[0]:
+				correct += 1
+		else:
+			_, tok_idx = torch.topk(predicted, k=opt.topk, dim=1)
+			tok_idx = tok_idx.numpy().tolist()[0]
+
+			gd = dataset.cls2imagenet_idx[label[0]]
+			if not isinstance(gd, list):
+				gd = [gd]
+			if list(set(gd)&set(tok_idx)) == []:
+				continue
+			else:
+				correct += 1
 	print('Accuracy of the network on the %d test images: %f %%' % (total,
 			100 * correct / total))
 

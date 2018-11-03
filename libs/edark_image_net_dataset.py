@@ -27,7 +27,7 @@ class EdarkDataset(Dataset):
 			'Cup': [647, 968],
 			'Dog': list(range(150, 276)),
 			'Motorbike': 670,
-			# 'People': 10,
+			'People': 1000,
 			'Table': [736, 532]
 		}
 		self.imagenet_idx2cls = {}
