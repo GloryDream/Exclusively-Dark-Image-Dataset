@@ -9,11 +9,14 @@ import os
 from PIL import Image
 import json
 import numpy as np
+import collections
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', type=int, default=1, help='size of the batches')
 parser.add_argument('--img_dir', type=str, help='The path of the result images')
 parser.add_argument('--anno', type=str, help='The path of the cls_anno')
-parser.add_argument('--topk', type=int, help='The topk acc')
+parser.add_argument('--topk', type=int, required=True, help='The topk acc')
 
 opt = parser.parse_args()
 print(opt)
@@ -38,7 +41,7 @@ cls2imagenet_idx = {
 			'Cup': [647, 968],
 			'Dog': list(range(150, 276)),
 			'Motorbike': 670,
-			'People': 1000,
+			# 'People': 1000,
 			'Table': [736, 532]
 		}
 
@@ -49,6 +52,21 @@ for item in cls2imagenet_idx:
 			imagenet_idx2cls[id] = item
 	else:
 		imagenet_idx2cls[cls2imagenet_idx[item]] = item
+
+indices = list(imagenet_idx2cls.keys())
+oreder_imagenet_idx2cls = collections.OrderedDict(sorted(imagenet_idx2cls.items()))
+
+refined_imagenet_idx2cls = {}
+for idx, (_, v) in enumerate(oreder_imagenet_idx2cls.items()):
+	refined_imagenet_idx2cls[idx] = v
+
+refined_imagenet_cls2idx = {}
+for k, v in refined_imagenet_idx2cls.items():
+	if v not in refined_imagenet_cls2idx:
+		refined_imagenet_cls2idx[v] = [k]
+	else:
+		refined_imagenet_cls2idx[v].append(k)
+
 
 if __name__ == '__main__':
 	with open(opt.anno) as f:
@@ -73,27 +91,24 @@ if __name__ == '__main__':
 		img = img[None, :, :, :]
 		#print(np.shape(img))
 		output = resnet50(img.type(torch.cuda.FloatTensor))
-		predicted = torch.argmax(output.data, 1).item()
+		output = output.data.cpu().numpy()[0]
+		refined_output = np.take(output, indices)
 		total += 1
 		#print(predicted)
-		if opt.topk is None:
-			if predicted not in imagenet_idx2cls:
-				continue
-			if cls_anno[img_name.split('/')[-1]] == imagenet_idx2cls[predicted]:
-				correct += 1
+
+		top_idx = refined_output.argsort()[-opt.topk][::-1]
+
+		if img_name.split('/')[-1] == 'People':
+			continue
+		gd = refined_imagenet_cls2idx[cls_anno[img_name.split('/')[-1]]]
+		if not isinstance(gd, list):
+			gd = [gd]
+		if list(set(gd)&set(top_idx)) == []:
+			continue
 		else:
-			_, tok_idx = torch.topk(output.data, k=opt.topk, dim=1)
-			tok_idx = tok_idx.cpu().numpy().tolist()[0]
+			correct += 1
 
-			gd = cls2imagenet_idx[cls_anno[img_name.split('/')[-1]]]
-			if not isinstance(gd, list):
-				gd = [gd]
-			if list(set(gd)&set(tok_idx)) == []:
-				continue
-			else:
-				correct += 1
-
-	print('Accuracy of the network on the %d test images: %f %%' % (total,
+	print('Top %d accuracy of the network on the %d test images: %f %%' % (opt.topk, total,
 			100 * correct / total))
 
 
