@@ -54,6 +54,7 @@ for item in cls2imagenet_idx:
 		imagenet_idx2cls[cls2imagenet_idx[item]] = item
 
 indices = list(imagenet_idx2cls.keys())
+indices.sort()
 oreder_imagenet_idx2cls = collections.OrderedDict(sorted(imagenet_idx2cls.items()))
 
 refined_imagenet_idx2cls = {}
@@ -89,14 +90,11 @@ if __name__ == '__main__':
 		img = Image.open(img_name)
 		img = transform(img)
 		img = img[None, :, :, :]
-		#print(np.shape(img))
 		output = resnet50(img.type(torch.cuda.FloatTensor))
 		output = output.data.cpu().numpy()[0]
 		refined_output = np.take(output, indices)
 		total += 1
-		#print(predicted)
-
-		top_idx = refined_output.argsort()[-opt.topk:][::-1]
+		top_idx = list(refined_output.argsort()[-opt.topk:][::-1])
 
 		if cls_anno[img_name.split('/')[-1]] == 'People':
 			continue
