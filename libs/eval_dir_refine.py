@@ -96,9 +96,9 @@ if __name__ == '__main__':
 		total += 1
 		#print(predicted)
 
-		top_idx = refined_output.argsort()[-opt.topk][::-1]
+		top_idx = refined_output.argsort()[-opt.topk:][::-1]
 
-		if img_name.split('/')[-1] == 'People':
+		if cls_anno[img_name.split('/')[-1]] == 'People':
 			continue
 		gd = refined_imagenet_cls2idx[cls_anno[img_name.split('/')[-1]]]
 		if not isinstance(gd, list):
