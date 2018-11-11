@@ -214,7 +214,7 @@ def resnet50(pretrained=False, finetuned=True, **kwargs):
     elif finetuned:
         resume_file = '/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/finetuned_resnet50/model_best.pth.tar'
         checkpoint = torch.load(resume_file)
-        model.load_state_dict(checkpoint)
+        model.load_state_dict(checkpoint['state_dict'])
     return model
 
 
