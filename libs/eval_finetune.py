@@ -1,4 +1,4 @@
-import torchvision.models as models
+from resnet_finetune import resnet50
 from edark_image_net_dataset import EdarkDataset
 from torch.utils.data import DataLoader
 import argparse
@@ -27,8 +27,8 @@ ft_cls2idx = {'Bicycle': 0,
   'Table': 11}
 
 if __name__ == '__main__':
-	resnet50 = models.resnet50(pretrained=True).cuda()
-	resnet50.eval()
+	model = resnet50(pretrained=True).cuda()
+	model.eval()
 	normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
 	                                 std=[0.229, 0.224, 0.225])
 	transform = transforms.Compose([
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 	total = 0
 	correct = 0
 	for img, label, _ in tqdm(dataloader):
-		output = resnet50(img.type(torch.cuda.FloatTensor))
+		output = model(img.type(torch.cuda.FloatTensor))
 		total += 1
 
 		_, top_idx = torch.topk(output.data, k=opt.topk, dim=1)
