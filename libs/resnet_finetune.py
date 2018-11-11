@@ -1,7 +1,7 @@
 import torch.nn as nn
 import math
 import torch.utils.model_zoo as model_zoo
-
+import torch
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
            'resnet152']
@@ -194,14 +194,14 @@ def resnet34(pretrained=False, **kwargs):
     return model
 
 
-def resnet50(pretrained=False, **kwargs):
+def resnet50(pretrained=False, finetuned=True, **kwargs):
     """Constructs a ResNet-50 model.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
-    if pretrained:
+    if pretrained and not finetuned:
         pretrained_dict = model_zoo.load_url(model_urls['resnet50'])
         model_dict = model.state_dict()
 
@@ -211,6 +211,10 @@ def resnet50(pretrained=False, **kwargs):
         model_dict.update(pretrained_dict)
         # 3. load the new state dict
         model.load_state_dict(model_dict)
+    elif finetuned:
+        resume_file = '/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/model_best.pth.tar'
+        checkpoint = torch.load(resume_file)
+        model.load_state_dict(checkpoint)
     return model
 
 

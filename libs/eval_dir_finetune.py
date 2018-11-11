@@ -64,7 +64,7 @@ ft_cls2idx = {'Bicycle': 0,
 if __name__ == '__main__':
 	with open(opt.anno) as f:
 		cls_anno = json.load(f)
-	model = resnet50(pretrained=True).cuda()
+	model = resnet50(finetuned=True).cuda()
 	model.eval()
 	normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
 	                                 std=[0.229, 0.224, 0.225])
