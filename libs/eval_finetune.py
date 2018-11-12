@@ -10,6 +10,7 @@ import torch
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', type=int, default=1, help='size of the batches')
 parser.add_argument('--topk', type=int, help='The topk acc')
+parser.add_argument('--resume_file', type=str, help='The path to resume file')
 opt = parser.parse_args()
 print(opt)
 
@@ -27,7 +28,7 @@ ft_cls2idx = {'Bicycle': 0,
   'Table': 11}
 
 if __name__ == '__main__':
-	model = resnet50(pretrained=True).cuda()
+	model = resnet50(pretrained=True, resume_file=opt.resume_file).cuda()
 	model.eval()
 	normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
 	                                 std=[0.229, 0.224, 0.225])
