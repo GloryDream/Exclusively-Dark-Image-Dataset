@@ -98,7 +98,7 @@ def main():
     # else:
     #     print("=> creating model '{}'".format(args.arch))
     #     model = models.__dict__[args.arch]()
-    model = resnet50(pretrained=True)
+    model = resnet50(pretrained=True, finetuned=False)
 
     if args.gpu is not None:
         model = model.cuda(args.gpu)

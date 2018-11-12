@@ -194,7 +194,7 @@ def resnet34(pretrained=False, **kwargs):
     return model
 
 
-def resnet50(pretrained=False, finetuned=True, **kwargs):
+def resnet50(pretrained=False, finetuned=True, resume_file=None, **kwargs):
     """Constructs a ResNet-50 model.
 
     Args:
@@ -202,6 +202,7 @@ def resnet50(pretrained=False, finetuned=True, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained and not finetuned:
+        print('==> load pretrained model')
         pretrained_dict = model_zoo.load_url(model_urls['resnet50'])
         model_dict = model.state_dict()
 
@@ -211,10 +212,13 @@ def resnet50(pretrained=False, finetuned=True, **kwargs):
         model_dict.update(pretrained_dict)
         # 3. load the new state dict
         model.load_state_dict(model_dict)
-    elif finetuned:
-        resume_file = '/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/finetuned_resnet50/model_best.pth.tar'
+    elif finetuned and resume_file is not None:
+        print('==> load finetuned model from '+resume_file)
+        # resume_file = '/home/xinyu/dataset/Exclusively-Dark-Image-Dataset/finetuned_resnet50/model_best.pth.tar'
         checkpoint = torch.load(resume_file)
         model.load_state_dict(checkpoint['state_dict'])
+    else:
+        raise FileNotFoundError
     return model
 
 

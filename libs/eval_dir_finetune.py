@@ -11,6 +11,7 @@ parser.add_argument('--batch_size', type=int, default=1, help='size of the batch
 parser.add_argument('--img_dir', type=str, help='The path of the result images')
 parser.add_argument('--anno', type=str, help='The path of the cls_anno')
 parser.add_argument('--topk', type=int, help='The topk acc')
+parser.add_argument('--resume_file', type=str, help='The path to resume file')
 
 opt = parser.parse_args()
 print(opt)
@@ -64,7 +65,7 @@ ft_cls2idx = {'Bicycle': 0,
 if __name__ == '__main__':
 	with open(opt.anno) as f:
 		cls_anno = json.load(f)
-	model = resnet50(finetuned=True).cuda()
+	model = resnet50(finetuned=True, resume_file=opt.resume_file).cuda()
 	model.eval()
 	normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
 	                                 std=[0.229, 0.224, 0.225])
