@@ -41,6 +41,8 @@ parser.add_argument('-b', '--batch-size', default=32, type=int,
                     metavar='N', help='mini-batch size (default: 256)')
 parser.add_argument('--lr', '--learning-rate', default=1e-4, type=float,
                     metavar='LR', help='initial learning rate')
+parser.add_argument('--fc_lr', '--fc_learning-rate', default=1e-3, type=float,
+                    metavar='fc_LR', help='initial learning rate')
 parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
                     help='momentum')
 parser.add_argument('--weight-decay', '--wd', default=1e-4, type=float,
@@ -128,7 +130,7 @@ def main():
         {"params": model.layer2.parameters()},
         {"params": model.layer3.parameters()},
         {"params": model.layer4.parameters()},
-        {"params": model.classifier.parameters(), "lr": 1e-3},
+        {"params": model.classifier.parameters(), "lr": args.fc_lr},
 
     ], args.lr,
                                 momentum=args.momentum,
