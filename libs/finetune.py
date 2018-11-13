@@ -72,6 +72,7 @@ best_acc1 = 0
 def main():
     global args, best_acc1
     args = parser.parse_args()
+    os.makedirs(args.save_dir)
 
     if args.seed is not None:
         random.seed(args.seed)
