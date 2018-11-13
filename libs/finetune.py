@@ -63,6 +63,8 @@ parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 parser.add_argument('--gpu', default=None, type=int,
                     help='GPU id to use.')
+parser.add_argument('--save_dir', required=True, type=str,
+                    help='where to save.')
 
 best_acc1 = 0
 
@@ -303,9 +305,9 @@ def validate(val_loader, model, criterion):
 
 
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
-    torch.save(state, filename)
+    torch.save(state, os.path.join(args.save_dir, filename))
     if is_best:
-        shutil.copyfile(filename, 'model_best.pth.tar')
+        shutil.copyfile(os.path.join(args.save_dir, filename), os.path.join(args.save_dir, 'model_best.pth.tar'))
 
 
 class AverageMeter(object):
